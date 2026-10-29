@@ -1,5 +1,7 @@
 # PromptPriced — Quick start
 
+![Compare three models: answers, grades, cost and execution time](docs/comparison.png)
+
 Compare **answer quality, cost, and execution time** across up to three AI models using the same prompt. Blind mode hides model identities until reveal; the workflow panel projects cost and time at scale.
 
 **How it connects:** Browser → this app → LiteLLM → model providers. LiteLLM puts several providers behind one API; it does not download or run these cloud models locally.
