@@ -1,0 +1,30 @@
+id: extraction
+title: 'Round 1 — Same answer. Different bill.'
+description: Extract a synthetic claim into an exact schema. Compare correctness and measured cost.
+max_tokens: 4096
+prompt: |
+  Extract this synthetic claim into a single JSON object, with exactly these keys:
+  claim_id (string), policyholder (string), loss_date (YYYY-MM-DD),
+  reported_date (YYYY-MM-DD), cause (string), estimated_loss_usd (number),
+  deductible_usd (number), injuries (integer), police_report_id (string or null).
+  Use null for an explicitly absent police report. Do not invent information.
+  Return JSON only, without commentary.
+
+  Synthetic claim FN-2048: Policyholder Avery Morgan reported the claim on
+  March 16, 2026. A burst pipe damaged the kitchen on March 14, 2026.
+  The recorded cause is "water damage". The repair estimate is $18,450.75;
+  the policy deductible is $1,000. No one was injured (0 injuries).
+  No police report was filed.
+grading:
+  type: json
+  exact_keys: true
+  fields:
+    claim_id: {type: string, expected: FN-2048}
+    policyholder: {type: string, expected: Avery Morgan}
+    loss_date: {type: date, expected: '2026-03-14'}
+    reported_date: {type: date, expected: '2026-03-16'}
+    cause: {type: string, expected: water damage}
+    estimated_loss_usd: {type: number, expected: 18450.75, tolerance: 0.01}
+    deductible_usd: {type: number, expected: 1000, tolerance: 0.01}
+    injuries: {type: integer, expected: 0}
+    police_report_id: {type: string, expected: null}

@@ -1,0 +1,14 @@
+# Local fallback rates from the supplied gateway screenshot.
+# Values are USD per token; comments show input/output USD per 1M tokens.
+# Cache rates are omitted because the screenshot does not report them.
+units: USD_per_token
+models:
+  gemini/gemini-3.5-flash:  # $1.50 input / $9.00 output per 1M
+    input_cost_per_token: 0.0000015
+    output_cost_per_token: 0.000009
+  gemini/gemini-3.7-flash:  # $0.75 input / $3.75 output per 1M
+    input_cost_per_token: 0.00000075
+    output_cost_per_token: 0.00000375
+  groq/openai/gpt-oss-120b:  # $0.15 input / $0.60 output per 1M
+    input_cost_per_token: 0.00000015
+    output_cost_per_token: 0.0000006

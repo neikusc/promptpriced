@@ -218,3 +218,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# PromptPriced local configuration and runtime data
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+runs.db*
+fixtures/recorded_runs.json
+fixtures/*.tmp
+
+.env.*
+!.env.example
+litellm.env
+.DS_Store

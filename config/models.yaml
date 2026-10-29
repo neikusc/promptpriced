@@ -1,0 +1,5 @@
+# Preferred models for Reels A, B, and C. Discovery remains authoritative.
+defaults:
+  - gemini/gemini-3.5-flash
+  - gemini/gemini-3.7-flash
+  - groq/openai/gpt-oss-120b

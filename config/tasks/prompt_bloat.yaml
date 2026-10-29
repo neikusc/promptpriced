@@ -1,0 +1,42 @@
+id: prompt_bloat
+title: 'Round 3 — The cheapest token is the one you never send'
+description: One model, the same synthetic claim and exact schema, two instruction lengths.
+max_tokens: 4096
+prompt: &lean |
+  Return JSON only with exactly: claim_id (string), loss_date (YYYY-MM-DD),
+  estimated_loss_usd (number), police_report_id (string or null).
+  Claim FN-7310: On September 8, 2026, a storm damaged a roof.
+  The estimated loss is $7,258.50. No police report was filed.
+variants:
+  - id: bloated
+    label: Bloated instructions
+    prompt: |
+      You are an extremely careful synthetic insurance claim extraction assistant.
+      Read all instructions before beginning. Your only task is to extract facts
+      from the source narrative below. Accuracy is essential. Do not infer facts.
+      Do not summarize the claim. Do not provide commentary, markdown, code fences,
+      explanations, apologies, alternatives, confidence scores, or extra fields.
+      Return a single valid JSON object. Use double-quoted keys and string values.
+      A missing police report must be JSON null, not the string "null", "none",
+      "N/A", an empty string, or 0. Preserve the exact claim identifier. Convert
+      the date into YYYY-MM-DD. The estimated loss must be a JSON number, with no
+      currency symbol or thousands separator. Do not add policyholder, cause,
+      injuries, address, deductible, reported_date, or any other fields.
+      The exact schema is: claim_id (string), loss_date (YYYY-MM-DD),
+      estimated_loss_usd (number), police_report_id (string or null).
+      Source narrative: Claim FN-7310: On September 8, 2026, a storm damaged a roof.
+      The estimated loss is $7,258.50. No police report was filed.
+      Final reminder: extract only these four fields, use the exact identifier,
+      format the date as YYYY-MM-DD, use a number for the loss and null for the
+      absent police report. Return JSON only without extra keys or commentary.
+  - id: lean
+    label: Lean instructions
+    prompt: *lean
+grading:
+  type: json
+  exact_keys: true
+  fields:
+    claim_id: {type: string, expected: FN-7310}
+    loss_date: {type: date, expected: '2026-09-08'}
+    estimated_loss_usd: {type: number, expected: 7258.50, tolerance: 0.01}
+    police_report_id: {type: string, expected: null}

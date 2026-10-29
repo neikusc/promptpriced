@@ -1,0 +1,46 @@
+id: leakage
+title: 'Round 2 — When is the upgrade worth it?'
+description: Diagnose a synthetic churn experiment. Keyword grading is a heuristic; presenter review is encouraged.
+max_tokens: 8192
+prompt: |
+  Review this synthetic churn experiment and recommend what to fix before rollout.
+  Be concise but explicit about each distinct problem and how to validate again.
+  At the start of each month, we predict whether an account will cancel during
+  the next 30 days. Only 1% of account-months churn. We trained on monthly
+  snapshots, randomly splitting rows 80/20, so the same account can appear in
+  both sets. Features include account tenure, payment history, and cancellation
+  date, populated after cancellation. Test accuracy is 99%. The team proposes
+  a rollout based on that accuracy alone.
+grading:
+  type: rubric
+  findings:
+    - id: target_leakage
+      label: Cancellation date leaks post-outcome information
+      any_of:
+        - ['\bcancel\w*\b', '\b(leak\w*|post[- ]outcome|future information|after)\b']
+        - ['\b(target|label|outcome) leakage\b']
+      exclude_patterns: ['\b(no|without)\s+(?:target\s+)?leakage\b', '\b(?:does not|doesn.t|cannot|can.t)\s+(?:cause\s+)?leak\b']
+    - id: account_overlap
+      label: Prevent the same account leaking across train and test
+      any_of:
+        - ['\b(account|customer|entity|group)\b', '\b(split|overlap|leak\w*|disjoint|holdout)\b']
+      exclude_patterns: ['\bno\s+(?:account\s+)?leakage\b']
+    - id: temporal_holdout
+      label: Use a forward-time holdout for future months
+      any_of:
+        - ['\b(temporal|chronological|forward[- ]time|out[- ]of[- ]time)\b']
+        - ['\btrain\b', '\b(earlier|past)\b', '\b(later|future)\b']
+      exclude_patterns: ['\b(?:do not|don.t|no need to)\s+(?:use\s+)?(?:a\s+)?(?:temporal|chronological)\b']
+    - id: accuracy_baseline
+      label: 99% accuracy equals the always-non-churn baseline
+      any_of:
+        - ['\b99\s*%', '\b(baseline|majority|non[- ]?churn|no[- ]?churn|never churn)\b']
+        - ['\baccuracy\b', '\b(misleading|uninformative|imbalanc\w*|not sufficient|not enough)\b']
+      exclude_patterns: ['\baccuracy is (?:sufficient|enough|reliable)\b']
+    - id: useful_metrics
+      label: Evaluate minority-class performance and decision value
+      any_of:
+        - ['\bprecision\b', '\brecall\b']
+        - ['\b(?:pr[- ]?auc|auc[- ]?pr|average precision|precision[- ]recall)\b']
+        - ['\b(?:lift|recall at|precision at|cost[- ]sensitive|expected value)\b']
+      exclude_patterns: ['\b(?:ignore|avoid|do not use|don.t use)\b']

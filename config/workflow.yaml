@@ -1,0 +1,23 @@
+title: Fix the bill
+description: Synthetic claims triage — a design estimate, not a production forecast.
+days_per_month: 30
+fix_excludes: [reasoning]
+steps:
+  - id: extract
+    label: Extract claim documents
+    unit: document
+    kind: batch
+    task_id: extraction
+    prompt_evidence: prompt_bloat
+  - id: analysis
+    label: Analysis agent
+    unit: turn
+    kind: agent
+    task_id: leakage
+as_built:
+  workflows_per_day: 10000
+  retry_rate: 0.2
+  max_retries: null
+  steps:
+    extract: {model: '', calls: 8, concurrency: 1, bloated_prompt: true}
+    analysis: {model: '', turns: 6, context: full, window_turns: 2}
