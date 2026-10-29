@@ -76,7 +76,7 @@ If a run cannot start and a recording exists for its task, the notice offers a r
 
 ## Configuration reconstructed from the source
 
-The supplied [original app specification](APP_SPEC.md) is OCR-damaged and lacks usable model, pricing and workflow YAML. This implementation repairs Python/regex/YAML syntax and uses:
+The original app specification is OCR-damaged and lacks usable model, pricing and workflow YAML. This implementation repairs Python/regex/YAML syntax and uses:
 
 - Empty model defaults and local price tables, avoiding guessed model IDs and rates.
 - A documented synthetic two-step workflow with 30 days/month, 10,000 packets/day, eight documents, six agent turns and a 20% retry rate. These defaults are editable in `config/workflow.yaml`.
